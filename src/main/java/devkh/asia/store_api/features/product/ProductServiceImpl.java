@@ -2,6 +2,7 @@ package devkh.asia.store_api.features.product;
 
 import devkh.asia.store_api.domain.Product;
 import devkh.asia.store_api.features.product.dto.ProductResponse;
+import devkh.asia.store_api.features.product.dto.ProductResponseDetails;
 import devkh.asia.store_api.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,17 @@ public class ProductServiceImpl implements ProductService{
         PageRequest pageRequest = PageRequest.of(page, size, sortByProductName);
         Page<Product> products = productRepository.findAll(pageRequest);
         return products.map(productMapper::toProductResponse);
+    }
+
+    @Override
+    public ProductResponseDetails findProductByUuid(String uuid) {
+        Product product = productRepository.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Product has been not found...!"
+                )
+        );
+        return productMapper.toProductResponseDetails(product);
     }
 
 
