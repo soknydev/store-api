@@ -1,6 +1,7 @@
 package devkh.asia.store_api.features.product;
 
 import devkh.asia.store_api.domain.Product;
+import devkh.asia.store_api.features.product.dto.ProductCreateRequest;
 import devkh.asia.store_api.features.product.dto.ProductResponse;
 import devkh.asia.store_api.features.product.dto.ProductResponseDetails;
 import devkh.asia.store_api.mapper.ProductMapper;
@@ -12,12 +13,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+
+    @Override
+    public void createNewProduct(ProductCreateRequest createRequest) {
+        if (productRepository.existsByName(createRequest.name())){
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This product already exist...!"
+            );
+        }
+        Product product = productMapper.fromProductCreateRequest(createRequest);
+        product.setUuid(UUID.randomUUID().toString());
+        product.setIsDeleted(false);
+        productRepository.save(product);
+    }
 
     @Override
     public Page<ProductResponse> findProducts(int page, int size) {
