@@ -48,16 +48,32 @@ public class DataInit {
             authorityRepository.saveAll(List.of(userRead, userWrite, productRead, productWrite));
 
             if (roleRepository.count() == 0 && userRepository.count() == 0) {
-                // Create and save a user
+                
+                // Create user role:user
                 User user = new User();
                 user.setUuid("123e4567-e89b-12d3-a456-426614174000");
-                user.setName("John Doe");
+                user.setName("User");
+                user.setUsername("user");
+                user.setPassword("user123");
                 user.setIsAccountNonExpired(true);
                 user.setIsAccountNonLocked(true);
                 user.setIsCredentialsNonExpired(true);
                 user.setIsDeleted(false);
                 user.setIsBlocked(false);
                 userRepository.save(user);
+                
+                // Create user role:admin
+                User userAdmin = new User();
+                userAdmin.setUuid("123e4567-e89b-12d3-a456-426614172030");
+                userAdmin.setName("Admin");
+                userAdmin.setUsername("admin");
+                userAdmin.setPassword("admin123");
+                userAdmin.setIsAccountNonExpired(true);
+                userAdmin.setIsAccountNonLocked(true);
+                userAdmin.setIsCredentialsNonExpired(true);
+                userAdmin.setIsDeleted(false);
+                userAdmin.setIsBlocked(false);
+                userRepository.save(userAdmin);
 
                 // Create roles and associate authorities
                 Role userRole = new Role();
@@ -74,8 +90,9 @@ public class DataInit {
                 roleRepository.saveAll(List.of(userRole, adminRole));
 
                 // Assign roles to the user
-                user.setRoles(List.of(userRole, adminRole));
-                userRepository.save(user);
+                user.setRoles(List.of(userRole));
+                userAdmin.setRoles(List.of(userRole, adminRole));
+                userRepository.saveAll(List.of(user, userAdmin));
             }
         }
     }
