@@ -33,11 +33,12 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private List<Product> products;
 
-    private Boolean isAccountNonExpired;
-    private Boolean isAccountNonLocked;
-    private Boolean isCredentialsNonExpired;
-    private Boolean isDeleted; // manage delete status (admin want to disable or remove an account)
-    private Boolean isBlocked; // manage block status (when there is bad action happened)
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
+    //private boolean isDeleted;
+    //private boolean isBlocked;
 
 
 }

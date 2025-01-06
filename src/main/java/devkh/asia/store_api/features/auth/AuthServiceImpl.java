@@ -24,7 +24,8 @@ public class AuthServiceImpl implements AuthService{
                 loginRequest.username(), loginRequest.password());
 
         auth = daoAuthenticationProvider.authenticate(auth);
-        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getCredentials();
+        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+
         log.info(customUserDetails.getUsername());
         log.info(customUserDetails.getPassword());
         customUserDetails.getAuthorities().forEach(

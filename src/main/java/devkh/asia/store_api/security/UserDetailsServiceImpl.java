@@ -2,10 +2,7 @@ package devkh.asia.store_api.security;
 
 import devkh.asia.store_api.domain.User;
 import devkh.asia.store_api.features.user.UserRepository;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 @Service
+@ToString
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -30,6 +28,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setUser(user);
         log.info("user {}", user);
+        log.info(user.getUsername());
+        log.info(user.getPassword());
         return customUserDetails;
     }
 

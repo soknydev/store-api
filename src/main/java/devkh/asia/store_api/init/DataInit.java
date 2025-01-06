@@ -10,6 +10,7 @@ import devkh.asia.store_api.features.user.RoleRepository;
 import devkh.asia.store_api.features.user.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class DataInit {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     void init() {
@@ -48,31 +50,33 @@ public class DataInit {
             authorityRepository.saveAll(List.of(userRead, userWrite, productRead, productWrite));
 
             if (roleRepository.count() == 0 && userRepository.count() == 0) {
-                
+
                 // Create user role:user
                 User user = new User();
                 user.setUuid("123e4567-e89b-12d3-a456-426614174000");
                 user.setName("User");
                 user.setUsername("user");
-                user.setPassword("user123");
-                user.setIsAccountNonExpired(true);
-                user.setIsAccountNonLocked(true);
-                user.setIsCredentialsNonExpired(true);
-                user.setIsDeleted(false);
-                user.setIsBlocked(false);
+                user.setPassword(passwordEncoder.encode("user123"));
+                user.setAccountNonExpired(true);
+                user.setAccountNonLocked(true);
+                user.setCredentialsNonExpired(true);
+                user.setEnabled(true);
+                //user.setDeleted(false);
+                //user.setBlocked(false);
                 userRepository.save(user);
-                
+
                 // Create user role:admin
                 User userAdmin = new User();
                 userAdmin.setUuid("123e4567-e89b-12d3-a456-426614172030");
                 userAdmin.setName("Admin");
                 userAdmin.setUsername("admin");
-                userAdmin.setPassword("admin123");
-                userAdmin.setIsAccountNonExpired(true);
-                userAdmin.setIsAccountNonLocked(true);
-                userAdmin.setIsCredentialsNonExpired(true);
-                userAdmin.setIsDeleted(false);
-                userAdmin.setIsBlocked(false);
+                userAdmin.setPassword(passwordEncoder.encode("admin123"));
+                userAdmin.setAccountNonExpired(true);
+                userAdmin.setAccountNonLocked(true);
+                userAdmin.setCredentialsNonExpired(true);
+                userAdmin.setEnabled(true);
+                //userAdmin.setDeleted(false);
+                //userAdmin.setBlocked(false);
                 userRepository.save(userAdmin);
 
                 // Create roles and associate authorities
