@@ -9,7 +9,9 @@
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
 
+    import java.util.ArrayList;
     import java.util.Collection;
+    import java.util.List;
     import java.util.stream.Collectors;
     import java.util.stream.Stream;
 
@@ -23,7 +25,7 @@
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return user.getRoles().stream()
+            /*return user.getRoles().stream()
                     .flatMap(role -> {
                         // Add role itself
                         Stream<GrantedAuthority> roleStream = Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
@@ -32,7 +34,16 @@
                                 .map(authority -> new SimpleGrantedAuthority(authority.getName()));
                         return Stream.concat(roleStream, authorityStream);
                     })
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList());*/
+
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            user.getRoles().forEach(role -> {
+                authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+                role.getAuthorities().forEach(authority -> {
+                    authorities.add(new SimpleGrantedAuthority(authority.getName()));
+                });
+            });
+            return authorities;
         }
 
 

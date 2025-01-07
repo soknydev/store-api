@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,13 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Authenticated user: {}", customUserDetails.getUsername());
 
+        String scope = customUserDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(", "));
+
+        log.info("Scope: {}",scope);
+
         Instant now = Instant.now();
 
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
@@ -47,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
                 .issuedAt(now)
                 .expiresAt(now.plus(3, ChronoUnit.MINUTES))
                 .issuer("store-api")
+                .claim("scope", scope)
                 .claim("roles", customUserDetails.getUser().getRoles().stream()
                         .map(Role::getName)
                         .toList())
