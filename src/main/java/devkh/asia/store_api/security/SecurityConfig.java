@@ -90,12 +90,8 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
-        // Set the claim name to "scope" (matches your JWT payload)
-        authoritiesConverter.setAuthoritiesClaimName("scope");
-
-        // Set the authority prefix to "SCOPE_" (required by Spring Security)
-        authoritiesConverter.setAuthorityPrefix("SCOPE_");
+        authoritiesConverter.setAuthoritiesClaimName("scope"); // Matches "scope" claim in JWT
+        authoritiesConverter.setAuthorityPrefix("SCOPE_");    // Matches Spring Security convention
 
         JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
         authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);

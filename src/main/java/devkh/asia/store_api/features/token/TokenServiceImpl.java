@@ -46,14 +46,12 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String createAccessToken(Authentication auth) {
-
-        String scope = auth.getAuthorities()
-                .stream()
+        String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(", "));
+                .map(authority -> authority.startsWith("SCOPE_") ? authority.substring(6) : authority)
+                .collect(Collectors.joining(" ")); // Use space as delimiter
 
         Instant now = Instant.now();
-
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .id(auth.getName())
                 .subject("Access Resource")
@@ -69,15 +67,12 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String createRefreshToken(Authentication auth) {
-
-        String scope = auth.getAuthorities()
-                .stream()
+        String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(", "));
-
+                .map(authority -> authority.startsWith("SCOPE_") ? authority.substring(6) : authority)
+                .collect(Collectors.joining(" "));
 
         Instant now = Instant.now();
-
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .id(auth.getName())
                 .subject("Refresh Resource")
@@ -85,6 +80,7 @@ public class TokenServiceImpl implements TokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(5, ChronoUnit.MINUTES))
                 .issuer(auth.getName())
+                .claim("scope", scope)
                 .build();
 
         return refreshJwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
