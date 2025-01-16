@@ -37,8 +37,5 @@ public class User {
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
-    //private boolean isDeleted;
-    //private boolean isBlocked;
-
 
 }
